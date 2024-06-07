@@ -1,11 +1,10 @@
 import express, { Express } from "express";
-import { config } from "./config/default";
+import { config } from "./config";
 import logger from "./utils/logger";
 import databaseConnect from "./models/database";
 
 // import routes
-import healthCheckRoute from "./routes/healthCheck";
-import notFoundRoutes from "./routes/notFound";
+import { healthCheckRoute, notFoundRoute, userRoutes } from "./routes";
 
 const app: Express = express();
 
@@ -14,7 +13,9 @@ app.use(express.json());
 
 // define routes
 app.use(healthCheckRoute);
-app.use(notFoundRoutes);
+app.use(userRoutes);
+
+app.use(notFoundRoute);
 
 const server = app.listen(config.PORT, async () => {
     logger.info(`Listening to all incoming requests on port ${config.PORT}`);
