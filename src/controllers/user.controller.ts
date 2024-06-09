@@ -8,7 +8,7 @@ export async function addOneUser(
     next: NextFunction
 ) {
     try {
-        const user = await userService.createUser(req.body);
+        const user = await userService.addOneUser(req.body);
         return res.status(201).json({ data: user });
     } catch (error: any) {
         return res.status(500).json({ message: error.message });

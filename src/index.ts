@@ -4,7 +4,12 @@ import logger from "./utils/logger";
 import databaseConnect from "./models/database";
 
 // import routes
-import { healthCheckRoute, notFoundRoute, userRoutes } from "./routes";
+import {
+    healthCheckRoute,
+    notFoundRoute,
+    authRoutes,
+    userRoutes,
+} from "./routes";
 
 const app: Express = express();
 
@@ -13,6 +18,7 @@ app.use(express.json());
 
 // define routes
 app.use(healthCheckRoute);
+app.use(authRoutes);
 app.use(userRoutes);
 
 app.use(notFoundRoute);
