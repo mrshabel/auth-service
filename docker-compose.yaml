@@ -1,5 +1,6 @@
 services:
     api:
+        container_name: api
         build: .
         env_file: .env
         ports:
@@ -21,15 +22,35 @@ services:
 
     db:
         image: mongo
+        container_name: db
+        build:
+            context: .
+            dockerfile: db.Dockerfile
         restart: always
         env_file: .env
-        command: mongod --quiet --setParameter diagnosticDataCollectionEnabled=false
+        ports:
+            - 8001:27017
         volumes:
             - ./mongo-data:/data/db
         environment:
+            - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
             - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
             - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
-            - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+
+    db-admin:
+        image: mongo-express
+        container_name: db-admin
+        depends_on:
+            - db
+        restart: always
+        env_file: .env
+        ports:
+            - 8002:8000
+        environment:
+            - ME_CONFIG_MONGODB_ADMINUSERNAME=${MONGO_INITDB_ROOT_USERNAME}
+            - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+            - ME_CONFIG_MONGODB_URL=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@db:27017/
+            - ME_CONFIG_BASICAUTH=false
 
 volumes:
     mongo-data:
