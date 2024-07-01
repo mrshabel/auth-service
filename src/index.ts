@@ -1,7 +1,7 @@
 import express, { Express } from "express";
 import { config } from "./config";
 import logger from "./utils/logger";
-import databaseConnect from "./models/database";
+import databaseConnect from "./config/db.config";
 
 // import routes
 import {
@@ -10,6 +10,7 @@ import {
     authRoutes,
     userRoutes,
 } from "./routes";
+import errorMiddleware from "./middlewares/error.middleware";
 
 const app: Express = express();
 
@@ -22,6 +23,9 @@ app.use(authRoutes);
 app.use(userRoutes);
 
 app.use(notFoundRoute);
+
+// define `post` middleware configurations
+app.use(errorMiddleware);
 
 const server = app.listen(config.PORT, async () => {
     logger.info(`Listening to all incoming requests on port ${config.PORT}`);
