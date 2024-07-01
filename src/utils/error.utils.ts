@@ -1,3 +1,5 @@
+import { MongooseError } from "mongoose";
+// base error class for application
 class AppError extends Error {
     statusCode: number;
     isOperational: boolean;
@@ -54,7 +56,9 @@ class InternalServerError extends AppError {
     }
 }
 
-exports = {
+// class DatabaseConflict extends MongooseError {}
+
+export {
     AppError,
     BadRequestError,
     UnauthorizedError,
