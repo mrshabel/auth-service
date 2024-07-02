@@ -1,7 +1,9 @@
 services:
     api:
         container_name: api
-        build: .
+        build:
+            context: .
+            dockerfile: Dockerfile
         env_file: .env
         ports:
             - 8000:8000
@@ -16,7 +18,11 @@ services:
                       - node_modules
                       - dist
                       - mongo-data
+                      - scripts/init-db.js
 
+                - action: sync+restart
+                  path: ./src/config
+                  target: /app/src/config
                 - action: rebuild
                   path: package.json
 
