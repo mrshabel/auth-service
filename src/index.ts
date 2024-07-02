@@ -9,6 +9,7 @@ import {
     notFoundRoute,
     authRoutes,
     userRoutes,
+    sessionRoutes,
 } from "./routes";
 import errorMiddleware from "./middlewares/error.middleware";
 
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(healthCheckRoute);
 app.use(authRoutes);
 app.use(userRoutes);
+app.use(sessionRoutes);
 
 app.use(notFoundRoute);
 

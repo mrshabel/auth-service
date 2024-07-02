@@ -1,15 +1,19 @@
 import jwt from "jsonwebtoken";
 import { config } from "../config";
+import { AccessTokenPayload, RefreshTokenPayload } from "../types/auth.type";
 
-export const createAccessToken = async (payload: object) =>
+export const createAccessToken = async (payload: AccessTokenPayload) =>
     await jwt.sign(payload, config.JWT_SECRET, {
-        expiresIn: config.JWT_ACCESS_TOKEN_EXPIRY,
+        expiresIn: config.JWT_ACCESS_TOKEN_EXPIRY * 1000,
     });
 
-export const createRefreshToken = async (payload: object) =>
+export const createRefreshToken = async (payload: RefreshTokenPayload) =>
     await jwt.sign(payload, config.JWT_SECRET, {
-        expiresIn: config.JWT_REFRESH_TOKEN_EXPIRY,
+        expiresIn: config.JWT_REFRESH_TOKEN_EXPIRY * 1000,
     });
 
-export const decodeToken = async (token: string) =>
-    await jwt.verify(token, config.JWT_SECRET);
+export const decodeAccessToken = async (token: string) =>
+    (await jwt.verify(token, config.JWT_SECRET)) as AccessTokenPayload;
+
+export const decodeRefreshToken = async (token: string) =>
+    (await jwt.verify(token, config.JWT_SECRET)) as RefreshTokenPayload;

@@ -11,6 +11,7 @@ export const config: Readonly<IConfig> = {
     DATABASE_URL: process.env.DATABASE_URL!,
     NODE_ENV: process.env.NODE_ENV!,
     JWT_SECRET: process.env.JWT_SECRET!,
-    JWT_ACCESS_TOKEN_EXPIRY: process.env.JWT_ACCESS_TOKEN_EXPIRY!,
-    JWT_REFRESH_TOKEN_EXPIRY: process.env.JWT_REFRESH_TOKEN_EXPIRY!,
+    JWT_ACCESS_TOKEN_EXPIRY: Number(process.env.JWT_ACCESS_TOKEN_EXPIRY)!,
+    JWT_REFRESH_TOKEN_EXPIRY: Number(process.env.JWT_REFRESH_TOKEN_EXPIRY)!,
+    COOKIE_DOMAIN: process.env.COOKIE_DOMAIN!,
 };

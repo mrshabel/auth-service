@@ -19,8 +19,7 @@ export default function validate(schema: ZodSchema) {
 
         if (result.error) {
             return res.status(422).json({
-                message: "Validation failed",
-                errors: result.error.errors,
+                message: result.error.errors[0].message,
             });
         }
 
