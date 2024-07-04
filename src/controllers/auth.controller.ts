@@ -1,30 +1,38 @@
 import { Request, Response, NextFunction } from "express";
 import * as userService from "../services/user.service";
-import { LoginUserInput, SignupUserInput } from "../schemas/user.schema";
-import { hashPassword, validatePassword } from "../utils/password.utils";
+import * as authService from "../services/auth.service";
+import * as sessionService from "../services/session.service";
+import { createAccessToken, createRefreshToken } from "../utils/jwt.utils";
+import { LoginInput, SignupInput } from "../schemas/auth.schema";
+import { validatePassword } from "../utils/password.utils";
 import { omit } from "lodash";
+import logger from "../utils/logger";
+import {
+    accessTokenCookieOptions,
+    refreshTokenCookieOptions,
+} from "../config/auth.config";
 
-export async function signupUser(
-    req: Request<{}, {}, SignupUserInput["body"]>,
+export async function signup(
+    req: Request<{}, {}, SignupInput["body"]>,
     res: Response,
     next: NextFunction
 ) {
     try {
-        const hashedPassword = await hashPassword(req.body.password);
-        const user = await userService.addOneUser({
-            ...req.body,
-            password: hashedPassword,
-        });
+        const user = await authService.signup(req.body);
+        logger.info(user);
 
-        return res.status(201).json({ data: omit(user.toJSON(), "password") });
+        //TODO: send verification email
+
+        return res.status(201).json({
+            message: "Success! A verification link has been sent to your email",
+        });
     } catch (error: any) {
-        return res.status(500).json({ message: error.message });
-        // next(error);
+        next(error);
     }
 }
 
-export async function loginUser(
-    req: Request<{}, {}, LoginUserInput["body"]>,
+export async function login(
+    req: Request<{}, {}, LoginInput["body"]>,
     res: Response,
     next: NextFunction
 ) {
@@ -42,11 +50,37 @@ export async function loginUser(
                 .json({ message: "Invalid email or password" });
         }
 
-        // issue tokens
+        // TODO: add user permissions
 
-        return res.status(200).json({ data: omit(user.toJSON(), "password") });
+        // issue tokens
+        const [accessToken, refreshToken] = await Promise.all([
+            createAccessToken({ id: user.id, permissions: ["AppAdmin"] }),
+            createRefreshToken({ id: user.id }),
+        ]);
+
+        // get user browser agent from headers
+        const userAgent = req.headers["user-agent"] || "";
+        // create session
+        const session = await sessionService.addOneSession({
+            userId: user.id,
+            userAgent,
+            refreshToken,
+        });
+        logger.info(session);
+
+        // set cookies
+        res.cookie("accessToken", accessToken, accessTokenCookieOptions);
+        res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions);
+
+        return res.status(200).json({
+            message: "Login successful",
+            data: {
+                accessToken,
+                refreshToken,
+                user: omit(user.toJSON(), "password"),
+            },
+        });
     } catch (error: any) {
-        return res.status(500).json({ message: error.message });
-        // next(error);
+        next(error);
     }
 }

@@ -10,6 +10,7 @@ import {
     authRoutes,
     userRoutes,
     sessionRoutes,
+    permissionRoutes,
 } from "./routes";
 import errorMiddleware from "./middlewares/error.middleware";
 
@@ -23,6 +24,7 @@ app.use(healthCheckRoute);
 app.use(authRoutes);
 app.use(userRoutes);
 app.use(sessionRoutes);
+app.use(permissionRoutes);
 
 app.use(notFoundRoute);
 
