@@ -5,7 +5,7 @@ const sessionIdSchema = z.string({ required_error: "Session ID is required" });
 const userIdSchema = z.string({ required_error: "User ID is required" });
 
 // create
-export const createSessionSchema = z.object({
+export const addOneSessionSchema = z.object({
     userId: userIdSchema,
     userAgent: z.string({ required_error: "User Agent is required" }),
     refreshToken: z.string({
@@ -60,7 +60,7 @@ export const deleteAllSessionsByUserIdSchema = z.object({
         .required(),
 });
 
-export type CreateSessionInput = z.TypeOf<typeof createSessionSchema>;
+export type AddOneSessionInput = z.TypeOf<typeof addOneSessionSchema>;
 export type GetOneSessionByIdInput = z.TypeOf<typeof getOneSessionByIdSchema>;
 export type GetOneSessionByUserIdInput = z.TypeOf<
     typeof getAllSessionsByUserIdSchema

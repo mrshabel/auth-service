@@ -7,9 +7,9 @@
  */
 
 import { NextFunction, Request, Response } from "express";
-import { ZodSchema } from "zod";
+import { RequestBodyValidator } from "../types/validator.type";
 
-export default function validate(schema: ZodSchema) {
+export default function validate(schema: RequestBodyValidator) {
     return async function (req: Request, res: Response, next: NextFunction) {
         const result = schema.safeParse({
             body: req.body,
@@ -22,6 +22,11 @@ export default function validate(schema: ZodSchema) {
                 message: result.error.errors[0].message,
             });
         }
+
+        // modify request parameters to accept validated inputs
+        if (result.data.body) req.body = result.data.body;
+        if (result.data.params) req.params = result.data.params;
+        if (result.data.query) req.query = result.data.query;
 
         next();
     };

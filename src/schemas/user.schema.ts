@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-export const createUserSchema = z.object({
+export const addOneUserSchema = z.object({
     body: z
         .object({
             email: z
@@ -13,4 +13,4 @@ export const createUserSchema = z.object({
         .required(),
 });
 
-export type CreateUserInput = z.TypeOf<typeof createUserSchema>;
+export type AddOneUserInput = z.TypeOf<typeof addOneUserSchema>;

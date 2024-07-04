@@ -1,14 +1,10 @@
 import { Session } from "../models/session.model";
 import {
-    CreateSessionInput,
-    DeleteAllSessionsByUserIdInput,
-    DeleteOneSessionByIdInput,
-    GetOneSessionByIdInput,
-    GetOneSessionByUserIdInput,
+    AddOneSessionInput,
     UpdateOneSessionByIdInput,
 } from "../schemas/session.schema";
 
-export async function addOneSession(data: CreateSessionInput) {
+export async function addOneSession(data: AddOneSessionInput) {
     return await Session.create(data);
 }
 

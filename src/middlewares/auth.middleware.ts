@@ -20,7 +20,6 @@ export async function requireAuth(
     // verify token
     try {
         const payload = await decodeAccessToken(token);
-        console.log(payload);
         req.user = payload;
     } catch (error) {
         logger.error(error);
@@ -30,15 +29,11 @@ export async function requireAuth(
 }
 
 // define function to check for user permissions
-export async function hasPermissions(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
-    return function (permissions: Array<string>) {
+export function hasPermission(permissions: Array<string>) {
+    return async function (req: Request, res: Response, next: NextFunction) {
         const permissionsSet = new Set(permissions);
-        // TODO: add roles when implemented
-        const userPermissions = new Set(["User", "Admin"]);
+
+        const userPermissions = new Set(req.user.permissions);
         let isAuthorized = false;
 
         // check for permission
