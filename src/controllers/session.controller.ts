@@ -29,9 +29,9 @@ export async function getAllSessionsByUserId(
     next: NextFunction
 ) {
     try {
-        const sessions = await sessionService.getAllSessionsByUserId({
-            userId: req.user.id,
-        });
+        const sessions = await sessionService.getAllSessionsByUserId(
+            req.user.id
+        );
         return res.status(200).json({
             message: "Sessions successfully retrieved",
             data: sessions,
@@ -47,7 +47,7 @@ export async function getOneSessionById(
     next: NextFunction
 ) {
     try {
-        const session = await sessionService.getOneSessionById(req.params);
+        const session = await sessionService.getOneSessionById(req.params.id);
 
         if (!session) {
             throw new NotFoundError("Session not found");
@@ -67,14 +67,16 @@ export async function deleteOneSessionById(
     next: NextFunction
 ) {
     try {
-        const session = await sessionService.deleteOneSessionById(req.params);
+        const session = await sessionService.deleteOneSessionById(
+            req.params.id
+        );
 
         if (!session) {
             throw new NotFoundError("Session not found");
         }
 
         return res.status(204).json({
-            message: "Sessions successfully retrieved",
+            message: "Sessions successfully deleted",
         });
     } catch (error) {
         next(error);
