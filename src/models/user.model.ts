@@ -1,10 +1,11 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 import { UserDocument } from "../types/user.type";
 
 const userSchema = new Schema<UserDocument>(
     {
         email: { type: String, unique: true, required: true },
         password: { type: String, required: true, select: false },
+        permissions: [{ type: Types.ObjectId, ref: "permissions" }],
         firstName: { type: String, required: true },
         lastName: { type: String, required: true },
         isActive: { type: Boolean, required: true, default: false },

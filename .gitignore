@@ -1,4 +1,7 @@
+# dev-data
 mongo-data
+scripts/dev
+
 # Logs
 logs
 *.log
