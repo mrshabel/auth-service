@@ -1,40 +1,47 @@
 import * as sessionService from "../services/session.service";
 import { Request, Response, NextFunction } from "express";
 import {
-    GetOneSessionByIdInput,
-    DeleteOneSessionByIdInput,
+    GetAllSessionsRequest,
+    GetOneSessionByIdRequest,
+    DeleteOneSessionByIdRequest,
+    GetAllSessionsByUserIdRequest,
 } from "../schemas/session.schema";
-import logger from "../utils/logger";
 import { NotFoundError } from "../utils/error.utils";
+import { RequestWithSchema } from "../types/request.type";
 
 export async function getAllSessions(
-    req: Request,
+    req: RequestWithSchema<GetAllSessionsRequest>,
     res: Response,
     next: NextFunction
 ) {
     try {
-        const sessions = await sessionService.getAllSessions();
+        const { data, total } = await sessionService.getAllSessions(req.query);
         return res.status(200).json({
             message: "Sessions successfully retrieved",
-            data: sessions,
+            data,
+            total,
         });
     } catch (error) {
         next(error);
     }
 }
 
+// user id will be injected into the controller by the middleware
 export async function getAllSessionsByUserId(
-    req: Request,
+    req: RequestWithSchema<GetAllSessionsByUserIdRequest>,
     res: Response,
     next: NextFunction
 ) {
     try {
-        const sessions = await sessionService.getAllSessionsByUserId(
-            req.user.id
+        const { data, total } = await sessionService.getAllSessionsByUserId(
+            req.user.id,
+            req.query
         );
+
         return res.status(200).json({
             message: "Sessions successfully retrieved",
-            data: sessions,
+            data,
+            total,
         });
     } catch (error) {
         next(error);
@@ -42,7 +49,7 @@ export async function getAllSessionsByUserId(
 }
 
 export async function getOneSessionById(
-    req: Request<GetOneSessionByIdInput["params"], {}, {}>,
+    req: RequestWithSchema<GetOneSessionByIdRequest>,
     res: Response,
     next: NextFunction
 ) {
@@ -62,7 +69,7 @@ export async function getOneSessionById(
 }
 
 export async function deleteOneSessionById(
-    req: Request<DeleteOneSessionByIdInput["params"], {}, {}>,
+    req: RequestWithSchema<DeleteOneSessionByIdRequest>,
     res: Response,
     next: NextFunction
 ) {

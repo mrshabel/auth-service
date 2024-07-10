@@ -24,5 +24,9 @@ export const loginSchema = z.object({
         .required(),
 });
 
+// define request types
 export type SignupInput = z.TypeOf<typeof signupSchema>;
+export type SignupRequest = typeof signupSchema;
+
 export type LoginInput = z.TypeOf<typeof loginSchema>;
+export type LoginRequest = typeof loginSchema;

@@ -3,6 +3,9 @@ import validate from "../middlewares/validateResource";
 import {
     getOneSessionByIdSchema,
     deleteOneSessionByIdSchema,
+    getAllSessionsSchema,
+    getAllSessionsByUserIdSchema,
+    deleteAllSessionsByUserIdSchema,
 } from "../schemas/session.schema";
 import {
     getAllSessions,
@@ -18,10 +21,18 @@ const router = Router();
 // require authentication
 router.use(requireAuth);
 
-router.get("/sessions", getAllSessions);
+router.get("/sessions", validate(getAllSessionsSchema), getAllSessions);
 
-router.get("/sessions/me", getAllSessionsByUserId);
-router.delete("/sessions/me", deleteAllSessionsByUserId);
+router.get(
+    "/sessions/me",
+    validate(getAllSessionsByUserIdSchema),
+    getAllSessionsByUserId
+);
+router.delete(
+    "/sessions/me",
+    validate(deleteAllSessionsByUserIdSchema),
+    deleteAllSessionsByUserId
+);
 
 router.get(
     "/sessions/:id",

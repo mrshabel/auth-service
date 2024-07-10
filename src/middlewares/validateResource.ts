@@ -7,9 +7,9 @@
  */
 
 import { NextFunction, Request, Response } from "express";
-import { RequestBodyValidator } from "../types/validator.type";
+import { RequestValidator } from "../types/validator.type";
 
-export default function validate(schema: RequestBodyValidator) {
+export default function validate(schema: RequestValidator) {
     return async function (req: Request, res: Response, next: NextFunction) {
         const result = schema.safeParse({
             body: req.body,

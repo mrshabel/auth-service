@@ -1,6 +1,8 @@
 import { Session } from "../models/session.model";
 import {
     AddOneSessionInput,
+    GetAllSessionsByUserIdInput,
+    GetAllSessionsInput,
     UpdateOneSessionByIdInput,
 } from "../schemas/session.schema";
 
@@ -12,12 +14,41 @@ export async function getOneSessionById(id: string) {
     return await Session.findById(id);
 }
 
-export async function getAllSessions() {
-    return await Session.find();
+export async function getAllSessions(query: GetAllSessionsInput["query"]) {
+    const { skip, limit, ...search } = query;
+
+    // construct the search query
+    const searchQuery = { ...search };
+
+    // fetch records count and data
+    const [total, data] = await Promise.all([
+        Session.countDocuments(searchQuery),
+        Session.find(searchQuery)
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit),
+    ]);
+    return { total, data };
 }
 
-export async function getAllSessionsByUserId(userId: string) {
-    return await Session.find({ userId });
+export async function getAllSessionsByUserId(
+    userId: string,
+    query: GetAllSessionsByUserIdInput["query"]
+) {
+    const { skip, limit, ...search } = query;
+
+    // construct the search query
+    const searchQuery = { ...search, userId };
+
+    // fetch records count and data
+    const [total, data] = await Promise.all([
+        Session.countDocuments(searchQuery),
+        Session.find(searchQuery)
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit),
+    ]);
+    return { total, data };
 }
 
 export async function updateOneSessionById(

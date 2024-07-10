@@ -61,13 +61,27 @@ export const deleteOnePermissionByIdSchema = z.object({
     }),
 });
 
+// types for request
 export type AddOnePermissionInput = z.TypeOf<typeof addOnePermissionSchema>;
-export type GetOnePermissionByIdInput = z.TypeOf<
+export type AddOnePermissionRequest = typeof addOnePermissionSchema;
+
+export type GetAllPermissionsInput = z.infer<typeof getAllPermissionsSchema>;
+export type GetAllPermissionsRequest = typeof getAllPermissionsSchema;
+
+export type GetOnePermissionByIdInput = z.infer<
     typeof getOnePermissionByIdSchema
 >;
+
+export type GetOnePermissionByIdRequest = typeof getOnePermissionByIdSchema;
+
 export type UpdateOnePermissionByIdInput = z.TypeOf<
     typeof updateOnePermissionByIdSchema
 >;
+export type UpdateOnePermissionByIdRequest =
+    typeof updateOnePermissionByIdSchema;
+
 export type DeleteOnePermissionByIdInput = z.TypeOf<
     typeof deleteOnePermissionByIdSchema
 >;
+export type DeleteOnePermissionByIdRequest =
+    typeof deleteOnePermissionByIdSchema;

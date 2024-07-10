@@ -1,7 +1,7 @@
-import { ZodSchema, object as zodObject } from "zod";
+import { AnyZodObject, ZodSchema } from "zod";
 
-export interface RequestBodyValidator extends ZodSchema {
-    body?: typeof zodObject;
-    params?: typeof zodObject;
-    query?: typeof zodObject;
+export interface RequestValidator extends ZodSchema {
+    body?: AnyZodObject;
+    params?: AnyZodObject;
+    query?: AnyZodObject;
 }

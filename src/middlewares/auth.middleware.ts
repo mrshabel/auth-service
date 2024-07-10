@@ -28,9 +28,20 @@ export async function requireAuth(
     next();
 }
 
+/**
+ * Accepts a list of user permissions and checks if a user has permission to perform a request
+ * @param permissions
+ * @returns
+ */
 // define function to check for user permissions
 export function hasPermission(permissions: Array<string>) {
     return async function (req: Request, res: Response, next: NextFunction) {
+        if (!req.user) {
+            return res.status(201).json({
+                message: "You must be logged in to perform this action",
+            });
+        }
+
         const permissionsSet = new Set(permissions);
 
         const userPermissions = new Set(req.user.permissions);

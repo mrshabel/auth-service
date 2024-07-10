@@ -3,7 +3,12 @@ import * as userService from "../services/user.service";
 import * as authService from "../services/auth.service";
 import * as sessionService from "../services/session.service";
 import { createAccessToken, createRefreshToken } from "../utils/jwt.utils";
-import { LoginInput, SignupInput } from "../schemas/auth.schema";
+import {
+    LoginInput,
+    LoginRequest,
+    SignupInput,
+    SignupRequest,
+} from "../schemas/auth.schema";
 import { validatePassword } from "../utils/password.utils";
 import { omit } from "lodash";
 import logger from "../utils/logger";
@@ -11,13 +16,22 @@ import {
     accessTokenCookieOptions,
     refreshTokenCookieOptions,
 } from "../config/auth.config";
+import { BadRequestError } from "../utils/error.utils";
+import { RequestWithSchema } from "../types/request.type";
 
 export async function signup(
-    req: Request<{}, {}, SignupInput["body"]>,
+    req: RequestWithSchema<SignupRequest>,
     res: Response,
     next: NextFunction
 ) {
     try {
+        const existingUser = await userService.getOneUserByEmail(
+            req.body.email
+        );
+        if (existingUser) {
+            throw new BadRequestError("User already exists");
+        }
+
         const user = await authService.signup(req.body);
         logger.info(user);
 
@@ -32,7 +46,7 @@ export async function signup(
 }
 
 export async function login(
-    req: Request<{}, {}, LoginInput["body"]>,
+    req: RequestWithSchema<LoginRequest>,
     res: Response,
     next: NextFunction
 ) {

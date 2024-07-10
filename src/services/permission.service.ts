@@ -1,6 +1,7 @@
 import { Permission } from "../models/permission.model";
 import {
     AddOnePermissionInput,
+    GetAllPermissionsInput,
     UpdateOnePermissionByIdInput,
 } from "../schemas/permission.schema";
 
@@ -14,8 +15,23 @@ export async function getOnePermissionById(id: string) {
     return await Permission.findById(id);
 }
 
-export async function getAllPermissions() {
-    return Permission.find();
+export async function getAllPermissions(
+    query: GetAllPermissionsInput["query"]
+) {
+    const { skip, limit, ...search } = query;
+
+    // construct the search query
+    const searchQuery = { ...search };
+
+    // fetch records count and data
+    const [total, data] = await Promise.all([
+        Permission.countDocuments(searchQuery),
+        Permission.find(searchQuery)
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit),
+    ]);
+    return { total, data };
 }
 
 // update

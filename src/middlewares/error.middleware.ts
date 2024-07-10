@@ -18,13 +18,6 @@ export default async function errorMiddleware(
     const message =
         error instanceof AppError ? error.message : "Internal Server Error";
 
-    // return error object as response in development
-    if (config.NODE_ENV === Environment.DEVELOPMENT) {
-        return res.status(statusCode).json({ message: error });
-    }
-
-    // handle errors in staging and production environment
-
     return res.status(statusCode).json({ message });
 }
 

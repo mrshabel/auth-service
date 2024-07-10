@@ -22,12 +22,36 @@ export const getOneSessionByIdSchema = z.object({
         .required(),
 });
 
-export const getAllSessionsByUserIdSchema = z.object({
-    params: z
+export const getAllSessionsSchema = z.object({
+    query: z
         .object({
-            userId: userIdSchema,
+            skip: z.coerce
+                .number()
+                .min(0, "Skip should be at least 0")
+                .optional()
+                .default(0),
+            limit: z.coerce
+                .number()
+                .min(1, "Limit should be at least 1")
+                .optional()
+                .default(10),
         })
         .required(),
+});
+
+export const getAllSessionsByUserIdSchema = z.object({
+    query: z.object({
+        skip: z.coerce
+            .number()
+            .min(0, "Skip should be at least 0")
+            .optional()
+            .default(0),
+        limit: z.coerce
+            .number()
+            .min(1, "Limit should be at least 1")
+            .optional()
+            .default(10),
+    }),
 });
 
 // update
@@ -60,17 +84,33 @@ export const deleteAllSessionsByUserIdSchema = z.object({
         .required(),
 });
 
+// define types for request
 export type AddOneSessionInput = z.TypeOf<typeof addOneSessionSchema>;
+export type AddOneSessionRequest = typeof addOneSessionSchema;
+
 export type GetOneSessionByIdInput = z.TypeOf<typeof getOneSessionByIdSchema>;
-export type GetOneSessionByUserIdInput = z.TypeOf<
+export type GetOneSessionByIdRequest = typeof getOneSessionByIdSchema;
+
+export type GetAllSessionsInput = z.TypeOf<typeof getAllSessionsSchema>;
+export type GetAllSessionsRequest = typeof getAllSessionsSchema;
+
+export type GetAllSessionsByUserIdInput = z.TypeOf<
     typeof getAllSessionsByUserIdSchema
 >;
+export type GetAllSessionsByUserIdRequest = typeof getAllSessionsByUserIdSchema;
+
 export type UpdateOneSessionByIdInput = z.TypeOf<
     typeof updateOneSessionByIdSchema
 >;
+export type UpdateOneSessionByIdRequest = typeof updateOneSessionByIdSchema;
+
 export type DeleteOneSessionByIdInput = z.TypeOf<
     typeof deleteOneSessionByIdSchema
 >;
+export type DeleteOneSessionByIdRequest = typeof deleteOneSessionByIdSchema;
+
 export type DeleteAllSessionsByUserIdInput = z.TypeOf<
     typeof deleteAllSessionsByUserIdSchema
 >;
+export type DeleteAllSessionsByUserIdRequest =
+    typeof deleteAllSessionsByUserIdSchema;

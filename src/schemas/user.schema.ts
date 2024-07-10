@@ -13,4 +13,24 @@ export const addOneUserSchema = z.object({
         .required(),
 });
 
+export const getAllUsersSchema = z.object({
+    query: z.object({
+        skip: z.coerce
+            .number()
+            .min(0, "Skip should be at least 0")
+            .optional()
+            .default(0),
+        limit: z.coerce
+            .number()
+            .min(1, "Limit should be at least 1")
+            .optional()
+            .default(10),
+    }),
+});
+
+// define request types
 export type AddOneUserInput = z.TypeOf<typeof addOneUserSchema>;
+export type AddOneUserRequest = typeof addOneUserSchema;
+
+export type GetAllUsersInput = z.TypeOf<typeof getAllUsersSchema>;
+export type GetAllUsersRequest = typeof getAllUsersSchema;

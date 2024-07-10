@@ -1,16 +1,18 @@
 import { NextFunction, Request, Response } from "express";
 import {
-    AddOnePermissionInput,
-    DeleteOnePermissionByIdInput,
-    GetOnePermissionByIdInput,
-    UpdateOnePermissionByIdInput,
+    GetAllPermissionsRequest,
+    AddOnePermissionRequest,
+    GetOnePermissionByIdRequest,
+    UpdateOnePermissionByIdRequest,
+    DeleteOnePermissionByIdRequest,
 } from "../schemas/permission.schema";
 import * as permissionService from "../services/permission.service";
 import { NotFoundError } from "../utils/error.utils";
+import { RequestWithSchema } from "../types/request.type";
 
 // create
 export async function addOnePermission(
-    req: Request<{}, {}, AddOnePermissionInput["body"]>,
+    req: RequestWithSchema<AddOnePermissionRequest>,
     res: Response,
     next: NextFunction
 ) {
@@ -27,7 +29,7 @@ export async function addOnePermission(
 
 // read
 export async function getOnePermissionById(
-    req: Request<GetOnePermissionByIdInput["params"], {}, {}>,
+    req: RequestWithSchema<GetOnePermissionByIdRequest>,
     res: Response,
     next: NextFunction
 ) {
@@ -50,12 +52,14 @@ export async function getOnePermissionById(
 }
 
 export async function getAllPermissions(
-    req: Request,
+    req: RequestWithSchema<GetAllPermissionsRequest>,
     res: Response,
     next: NextFunction
 ) {
     try {
-        const permissions = await permissionService.getAllPermissions();
+        const permissions = await permissionService.getAllPermissions(
+            req.query
+        );
 
         return res.status(200).json({
             message: "Permissions successfully retrieved",
@@ -68,11 +72,7 @@ export async function getAllPermissions(
 
 // update
 export async function updateOnePermissionById(
-    req: Request<
-        UpdateOnePermissionByIdInput["params"],
-        {},
-        UpdateOnePermissionByIdInput["body"]
-    >,
+    req: RequestWithSchema<UpdateOnePermissionByIdRequest>,
     res: Response,
     next: NextFunction
 ) {
@@ -98,7 +98,7 @@ export async function updateOnePermissionById(
 // delete
 
 export async function deleteOnePermissionById(
-    req: Request<DeleteOnePermissionByIdInput["params"], {}, {}>,
+    req: RequestWithSchema<DeleteOnePermissionByIdRequest>,
     res: Response,
     next: NextFunction
 ) {
