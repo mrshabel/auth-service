@@ -12,8 +12,26 @@ export const createRefreshToken = async (payload: RefreshTokenPayload) =>
         expiresIn: config.JWT_REFRESH_TOKEN_EXPIRY,
     });
 
-export const decodeAccessToken = async (token: string) =>
-    (await jwt.verify(token, config.JWT_SECRET)) as AccessTokenPayload;
+export const decodeAccessToken = async (token: string) => {
+    // decode token
+    const decodedToken = (await jwt.decode(token)) as jwt.JwtPayload;
+    if (!decodedToken.exp || decodedToken.exp < Date.now() / 1000) {
+        throw new Error("Token has expired");
+    }
 
-export const decodeRefreshToken = async (token: string) =>
-    (await jwt.verify(token, config.JWT_SECRET)) as RefreshTokenPayload;
+    // verify token and check that it hasn't been tampered with
+    // throws an error by default
+    return jwt.verify(token, config.JWT_SECRET) as AccessTokenPayload;
+};
+
+export const decodeRefreshToken = async (token: string) => {
+    // decode token
+    const decodedToken = (await jwt.decode(token)) as jwt.JwtPayload;
+    if (!decodedToken.exp || decodedToken.exp < Date.now() / 1000) {
+        throw new Error("Token has expired");
+    }
+
+    // verify token and check that it hasn't been tampered with
+    // throws an error by default
+    return jwt.verify(token, config.JWT_SECRET) as RefreshTokenPayload;
+};

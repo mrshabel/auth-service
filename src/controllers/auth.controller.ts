@@ -4,9 +4,8 @@ import * as authService from "../services/auth.service";
 import * as sessionService from "../services/session.service";
 import { createAccessToken, createRefreshToken } from "../utils/jwt.utils";
 import {
-    LoginInput,
     LoginRequest,
-    SignupInput,
+    LogoutRequest,
     SignupRequest,
 } from "../schemas/auth.schema";
 import { validatePassword } from "../utils/password.utils";
@@ -18,6 +17,7 @@ import {
 } from "../config/auth.config";
 import { BadRequestError } from "../utils/error.utils";
 import { RequestWithSchema } from "../types/request.type";
+import { config } from "../config";
 
 export async function signup(
     req: RequestWithSchema<SignupRequest>,
@@ -33,14 +33,13 @@ export async function signup(
         }
 
         const user = await authService.signup(req.body);
-        logger.info(user);
 
         //TODO: send verification email
 
         return res.status(201).json({
             message: "Success! A verification link has been sent to your email",
         });
-    } catch (error: any) {
+    } catch (error) {
         next(error);
     }
 }
@@ -64,11 +63,13 @@ export async function login(
                 .json({ message: "Invalid email or password" });
         }
 
-        // TODO: add user permissions
+        const permissions = user.permissions.map(
+            (permission) => permission.name
+        );
 
         // issue tokens
         const [accessToken, refreshToken] = await Promise.all([
-            createAccessToken({ id: user.id, permissions: ["AppAdmin"] }),
+            createAccessToken({ id: user.id, permissions: permissions }),
             createRefreshToken({ id: user.id }),
         ]);
 
@@ -79,8 +80,10 @@ export async function login(
             userId: user.id,
             userAgent,
             refreshToken,
+            expiresAt: new Date(
+                Date.now() + config.JWT_REFRESH_TOKEN_EXPIRY * 1000
+            ),
         });
-        logger.info(session);
 
         // set cookies
         res.cookie("accessToken", accessToken, accessTokenCookieOptions);
@@ -91,10 +94,37 @@ export async function login(
             data: {
                 accessToken,
                 refreshToken,
+                sessionId: session.id,
                 user: omit(user.toJSON(), "password"),
             },
         });
-    } catch (error: any) {
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function logout(
+    req: RequestWithSchema<LogoutRequest>,
+    res: Response,
+    next: NextFunction
+) {
+    try {
+        // clear session
+        const session = await sessionService.deleteOneSessionById(
+            req.body.sessionId
+        );
+
+        if (!session) {
+            throw new BadRequestError("Failed to logout");
+        }
+
+        // reset token
+        res.clearCookie("accessToken");
+
+        return res.status(200).json({
+            message: "Logout successfully",
+        });
+    } catch (error) {
         next(error);
     }
 }

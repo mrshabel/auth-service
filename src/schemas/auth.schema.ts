@@ -24,9 +24,20 @@ export const loginSchema = z.object({
         .required(),
 });
 
+export const logoutSchema = z.object({
+    body: z
+        .object({
+            sessionId: z.string({ required_error: "Session ID is required" }),
+        })
+        .required(),
+});
+
 // define request types
 export type SignupInput = z.TypeOf<typeof signupSchema>;
 export type SignupRequest = typeof signupSchema;
 
 export type LoginInput = z.TypeOf<typeof loginSchema>;
 export type LoginRequest = typeof loginSchema;
+
+export type LogoutInput = z.TypeOf<typeof logoutSchema>;
+export type LogoutRequest = typeof logoutSchema;

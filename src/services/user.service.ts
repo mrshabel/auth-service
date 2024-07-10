@@ -10,7 +10,9 @@ export async function getOneUserById(id: string) {
 }
 
 export async function getOneUserByEmail(email: string) {
-    return await User.findOne({ email }).select("+password");
+    return await User.findOne({ email })
+        .select("+password")
+        .populate("permissions", "-_id name");
 }
 
 export async function getAllUsers(query: GetAllUsersInput["query"]) {
