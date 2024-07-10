@@ -6,4 +6,5 @@ export interface SessionDocument extends DocumentBase {
     userId: UserDocument["id"];
     userAgent: string; //browser information
     refreshToken: string;
+    expiresAt: Date;
 }

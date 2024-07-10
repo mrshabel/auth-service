@@ -77,3 +77,12 @@ export async function deleteAllSessionsByUserId(
         userAgent: { $not: { $eq: userAgent } },
     });
 }
+
+// delete all expired sessions
+/**
+ * Deletes all expired sessions
+ * @returns the an object representing the deleted sessions
+ */
+export async function deleteAllExpiredSessions() {
+    return await Session.deleteMany({ expiresAt: { $lt: new Date() } });
+}

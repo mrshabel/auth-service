@@ -101,9 +101,26 @@ export async function deleteAllSessionsByUserId(
         const userAgent = req.headers["user-agent"] || "";
         await sessionService.deleteAllSessionsByUserId(userId, userAgent);
 
-        return res.status(204).json({
+        return res.status(200).json({
             message: "All user sessions successfully deleted",
         });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function deleteAllStaleSessions(
+    req: Request,
+    res: Response,
+    next: NextFunction
+) {
+    try {
+        // delete all expired sessions
+        await sessionService.deleteAllExpiredSessions();
+
+        return res
+            .status(200)
+            .json({ message: "All expired sessions successfully deleted" });
     } catch (error) {
         next(error);
     }

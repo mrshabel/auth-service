@@ -6,6 +6,7 @@ const sessionSchema = new Schema<SessionDocument>(
         userId: { type: Types.ObjectId, ref: "users" },
         userAgent: { type: String, required: true },
         refreshToken: { type: String, required: true },
+        expiresAt: { type: Date, required: true },
     },
     {
         timestamps: true,

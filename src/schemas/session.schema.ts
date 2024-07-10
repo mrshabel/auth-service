@@ -11,6 +11,9 @@ export const addOneSessionSchema = z.object({
     refreshToken: z.string({
         required_error: "Refresh token is required",
     }),
+    expiresAt: z.coerce.date({
+        required_error: "Expiry time is required",
+    }),
 });
 
 // read
