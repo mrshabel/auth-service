@@ -109,35 +109,29 @@ export const refreshSessionSchema = z.object({
 });
 
 // define types for request
-export type AddOneSessionInput = z.TypeOf<typeof addOneSessionSchema>;
 export type AddOneSessionRequest = typeof addOneSessionSchema;
+export type AddOneSessionInput = z.infer<AddOneSessionRequest>;
 
-export type GetOneSessionByIdInput = z.TypeOf<typeof getOneSessionByIdSchema>;
+export type GetOneSessionByIdInput = z.infer<typeof getOneSessionByIdSchema>;
 export type GetOneSessionByIdRequest = typeof getOneSessionByIdSchema;
 
-export type GetAllSessionsInput = z.TypeOf<typeof getAllSessionsSchema>;
+export type GetAllSessionsInput = z.infer<GetAllSessionsRequest>;
 export type GetAllSessionsRequest = typeof getAllSessionsSchema;
 
-export type GetAllSessionsByUserIdInput = z.TypeOf<
-    typeof getAllSessionsByUserIdSchema
->;
 export type GetAllSessionsByUserIdRequest = typeof getAllSessionsByUserIdSchema;
+export type GetAllSessionsByUserIdInput =
+    z.infer<GetAllSessionsByUserIdRequest>;
 
-export type UpdateOneSessionByIdInput = z.TypeOf<
-    typeof updateOneSessionByIdSchema
->;
 export type UpdateOneSessionByIdRequest = typeof updateOneSessionByIdSchema;
+export type UpdateOneSessionByIdInput = z.infer<UpdateOneSessionByIdRequest>;
 
-export type DeleteOneSessionByIdInput = z.TypeOf<
-    typeof deleteOneSessionByIdSchema
->;
 export type DeleteOneSessionByIdRequest = typeof deleteOneSessionByIdSchema;
+export type DeleteOneSessionByIdInput = z.infer<DeleteOneSessionByIdRequest>;
 
-export type DeleteAllSessionsByUserIdInput = z.TypeOf<
-    typeof deleteAllSessionsByUserIdSchema
->;
 export type DeleteAllSessionsByUserIdRequest =
     typeof deleteAllSessionsByUserIdSchema;
+export type DeleteAllSessionsByUserIdInput =
+    z.infer<DeleteAllSessionsByUserIdRequest>;
 
-export type RefreshSessionInput = z.TypeOf<typeof refreshSessionSchema>;
 export type RefreshSessionRequest = typeof refreshSessionSchema;
+export type RefreshSessionInput = z.infer<RefreshSessionRequest>;

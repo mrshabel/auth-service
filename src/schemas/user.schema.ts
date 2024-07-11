@@ -29,8 +29,8 @@ export const getAllUsersSchema = z.object({
 });
 
 // define request types
-export type AddOneUserInput = z.TypeOf<typeof addOneUserSchema>;
 export type AddOneUserRequest = typeof addOneUserSchema;
+export type AddOneUserInput = z.TypeOf<AddOneUserRequest>;
 
-export type GetAllUsersInput = z.TypeOf<typeof getAllUsersSchema>;
 export type GetAllUsersRequest = typeof getAllUsersSchema;
+export type GetAllUsersInput = z.TypeOf<GetAllUsersRequest>;

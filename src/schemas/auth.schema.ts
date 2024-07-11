@@ -70,17 +70,17 @@ export const resetPasswordSchema = z.object({
 });
 
 // define request types
-export type SignupInput = z.TypeOf<typeof signupSchema>;
 export type SignupRequest = typeof signupSchema;
+export type SignupInput = z.infer<SignupRequest>;
 
-export type LoginInput = z.TypeOf<typeof loginSchema>;
 export type LoginRequest = typeof loginSchema;
+export type LoginInput = z.infer<LoginRequest>;
 
-export type LogoutInput = z.TypeOf<typeof logoutSchema>;
 export type LogoutRequest = typeof logoutSchema;
+export type LogoutInput = z.infer<LogoutRequest>;
 
-export type ForgotPasswordInput = z.TypeOf<typeof forgotPasswordSchema>;
 export type ForgotPasswordRequest = typeof forgotPasswordSchema;
+export type ForgotPasswordInput = z.infer<ForgotPasswordRequest>;
 
-export type ResetPasswordInput = z.TypeOf<typeof forgotPasswordSchema>;
-export type ResetPasswordRequest = typeof forgotPasswordSchema;
+export type ResetPasswordRequest = typeof resetPasswordSchema;
+export type ResetPasswordInput = z.infer<ResetPasswordRequest>;
