@@ -16,10 +16,10 @@ import {
     deleteAllSessionsByUserId,
     deleteOneSessionById,
     refreshSession,
+    deleteAllExpiredSessions,
 } from "../controllers/session.controller";
 import { hasPermission, requireAuth } from "../middlewares/auth.middleware";
 import { RoleBasedPermissionGroups } from "../schemas/shared.schema";
-import { deleteAllExpiredSessions } from "../services/session.service";
 
 const router = Router();
 
@@ -30,7 +30,7 @@ router.post("/:id/refresh", validate(refreshSessionSchema), refreshSession);
 router.use(requireAuth);
 
 router.get(
-    "/sessions",
+    "/",
     validate(getAllSessionsSchema),
     hasPermission([
         RoleBasedPermissionGroups.AppAdmin,

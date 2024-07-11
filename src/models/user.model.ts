@@ -10,8 +10,8 @@ const userSchema = new Schema<UserDocument>(
         lastName: { type: String, required: true },
         isActive: { type: Boolean, required: true, default: false },
         isLocked: { type: Boolean, required: true, default: false },
-        passwordResetToken: { type: String },
-        passwordResetExpires: { type: Date },
+        passwordResetToken: { type: String, select: false },
+        passwordResetExpires: { type: Date, select: false },
     },
     {
         timestamps: true,

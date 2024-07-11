@@ -7,19 +7,21 @@ import {
     ForgotPasswordRequest,
     LoginRequest,
     LogoutRequest,
+    ResetPasswordRequest,
     SignupRequest,
 } from "../schemas/auth.schema";
-import {
-    createPasswordResetToken,
-    validatePassword,
-} from "../utils/password.utils";
+import { validatePassword } from "../utils/password.utils";
 import { omit } from "lodash";
 import logger from "../utils/logger";
 import {
     accessTokenCookieOptions,
     refreshTokenCookieOptions,
 } from "../config/auth.config";
-import { BadRequestError } from "../utils/error.utils";
+import {
+    BadRequestError,
+    NotFoundError,
+    UnauthorizedError,
+} from "../utils/error.utils";
 import { RequestWithSchema } from "../types/request.type";
 import { config } from "../config";
 
@@ -56,15 +58,11 @@ export async function login(
     try {
         const user = await userService.getOneUserByEmail(req.body.email);
         if (!user) {
-            return res
-                .status(403)
-                .json({ message: "Invalid email or password" });
+            throw new BadRequestError("Invalid email or password");
         }
 
         if (!(await validatePassword(req.body.password, user.password))) {
-            return res
-                .status(403)
-                .json({ message: "Invalid email or password" });
+            throw new BadRequestError("Invalid email or password");
         }
 
         const permissions = user.permissions.map(
@@ -99,7 +97,10 @@ export async function login(
                 accessToken,
                 refreshToken,
                 sessionId: session.id,
-                user: omit(user.toJSON(), "password"),
+                user: omit(
+                    user.toJSON(),
+                    "password passwordResetToken passwordResetExpires"
+                ),
             },
         });
     } catch (error) {
@@ -146,15 +147,49 @@ export async function forgotPassword(
             throw new BadRequestError("No user found with this email");
         }
 
+        // return response if password has been request recently
+        if (
+            existingUser.passwordResetExpires &&
+            new Date() < new Date(existingUser.passwordResetExpires)
+        ) {
+            throw new BadRequestError(
+                "Password reset link was recently sent to your email"
+            );
+        }
+
         // create password reset token
-        const resetToken = createPasswordResetToken();
+        const resetToken = await authService.forgotPassword(req.body);
 
         //TODO: send password reset email email
 
-        return res.status(201).json({
+        return res.status(200).json({
             message:
                 "Success! A Password reset link has been sent to your email",
             resetToken,
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function resetPassword(
+    req: RequestWithSchema<ResetPasswordRequest>,
+    res: Response,
+    next: NextFunction
+) {
+    try {
+        // reset password
+        const user = await authService.resetPassword(req.params, req.body);
+
+        if (!user) {
+            throw new UnauthorizedError("Password reset token has expired");
+        }
+
+        // log user out of all sessions
+        await sessionService.deleteAllSessionsByUserId(user.id);
+
+        return res.status(200).json({
+            message: "Password reset successful",
         });
     } catch (error) {
         next(error);

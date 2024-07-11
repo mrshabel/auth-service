@@ -104,7 +104,10 @@ export async function deleteAllSessionsByUserId(
         // delete all sessions except current logged in session
         const userId = req.user.id;
         const userAgent = req.headers["user-agent"] || "";
-        await sessionService.deleteAllSessionsByUserId(userId, userAgent);
+        await sessionService.deleteAllSessionsExceptCurrentByUserId(
+            userId,
+            userAgent
+        );
 
         return res.status(200).json({
             message: "All user sessions successfully deleted",
@@ -114,7 +117,7 @@ export async function deleteAllSessionsByUserId(
     }
 }
 
-export async function deleteAllStaleSessions(
+export async function deleteAllExpiredSessions(
     req: Request,
     res: Response,
     next: NextFunction

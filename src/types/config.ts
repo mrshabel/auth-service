@@ -6,4 +6,5 @@ export interface IConfig {
     JWT_ACCESS_TOKEN_EXPIRY: number;
     JWT_REFRESH_TOKEN_EXPIRY: number;
     COOKIE_DOMAIN: string;
+    PASSWORD_RESET_TOKEN_EXPIRY: number;
 }

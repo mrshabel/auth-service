@@ -14,4 +14,5 @@ export const config: Readonly<IConfig> = {
     JWT_ACCESS_TOKEN_EXPIRY: Number(process.env.JWT_ACCESS_TOKEN_EXPIRY)!,
     JWT_REFRESH_TOKEN_EXPIRY: Number(process.env.JWT_REFRESH_TOKEN_EXPIRY)!,
     COOKIE_DOMAIN: process.env.COOKIE_DOMAIN!,
+    PASSWORD_RESET_TOKEN_EXPIRY: 900000, // 15 minutes
 };

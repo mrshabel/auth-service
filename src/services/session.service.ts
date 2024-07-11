@@ -71,17 +71,28 @@ export async function deleteOneSessionById(id: string) {
 
 /**
  * Deletes all device sessions user has except currently logged in device
- * @param userId
- * @param userAgent
+ * @param {string} userId
+ * @param {string} userAgent
  * @returns Promise<SessionDocument>
  */
-export async function deleteAllSessionsByUserId(
+export async function deleteAllSessionsExceptCurrentByUserId(
     userId: string,
     userAgent: string
 ) {
     return await Session.deleteMany({
         userId,
         userAgent: { $not: { $eq: userAgent } },
+    });
+}
+
+/**
+ * Deletes all device sessions user has except currently logged in device
+ * @param {string} userId
+ * @returns Promise<SessionDocument>
+ */
+export async function deleteAllSessionsByUserId(userId: string) {
+    return await Session.deleteMany({
+        userId,
     });
 }
 
