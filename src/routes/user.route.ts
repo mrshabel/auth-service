@@ -7,10 +7,10 @@ import { RoleBasedPermissionGroups } from "../schemas/shared.schema";
 
 const router = Router();
 
-router.route("/users").post(validate(addOneUserSchema), addOneUser);
+router.route("/").post(validate(addOneUserSchema), addOneUser);
 
 router
-    .route("/users")
+    .route("/")
     .get(
         validate(getAllUsersSchema),
         requireAuth,

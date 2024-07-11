@@ -23,11 +23,11 @@ app.use(express.json());
 app.use(requestLogger);
 
 // define routes
-app.use(healthCheckRoute);
-app.use(authRoutes);
-app.use(userRoutes);
-app.use(sessionRoutes);
-app.use(permissionRoutes);
+app.use("/health-check", healthCheckRoute);
+app.use("/", authRoutes);
+app.use("/users", userRoutes);
+app.use("/sessions/", sessionRoutes);
+app.use("/permissions", permissionRoutes);
 
 app.use(notFoundRoute);
 

@@ -24,11 +24,7 @@ import { deleteAllExpiredSessions } from "../services/session.service";
 const router = Router();
 
 // no authentication required
-router.post(
-    "/sessions/:id/refresh",
-    validate(refreshSessionSchema),
-    refreshSession
-);
+router.post("/:id/refresh", validate(refreshSessionSchema), refreshSession);
 
 // require authentication
 router.use(requireAuth);
@@ -45,7 +41,7 @@ router.get(
 );
 
 router.get(
-    "/sessions/me",
+    "/me",
     validate(getAllSessionsByUserIdSchema),
     hasPermission([
         RoleBasedPermissionGroups.Admin,
@@ -57,7 +53,7 @@ router.get(
     getAllSessionsByUserId
 );
 router.delete(
-    "/sessions/me",
+    "/me",
     validate(deleteAllSessionsByUserIdSchema),
     hasPermission([
         RoleBasedPermissionGroups.Admin,
@@ -69,7 +65,7 @@ router.delete(
 );
 
 router.delete(
-    "/sessions/expired",
+    "/expired",
     hasPermission([
         RoleBasedPermissionGroups.AppAdmin,
         SessionPermissionGroups.DeleteSession,
@@ -78,7 +74,7 @@ router.delete(
 );
 
 router.get(
-    "/sessions/:id",
+    "/:id",
     validate(getOneSessionByIdSchema),
     hasPermission([
         RoleBasedPermissionGroups.Admin,
@@ -90,7 +86,7 @@ router.get(
     getOneSessionById
 );
 router.delete(
-    "/sessions/:id",
+    "/:id",
     validate(deleteOneSessionByIdSchema),
     hasPermission([
         RoleBasedPermissionGroups.Admin,

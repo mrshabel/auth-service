@@ -24,7 +24,7 @@ const router = Router();
 router.use(requireAuth);
 
 router.post(
-    "/permissions",
+    "/",
     hasPermission([
         RoleBasedPermissionGroups.AppAdmin,
         RoleBasedPermissionGroups.Admin,
@@ -35,7 +35,7 @@ router.post(
 );
 
 router.get(
-    "/permissions",
+    "/",
     hasPermission([
         RoleBasedPermissionGroups.AppAdmin,
         RoleBasedPermissionGroups.Admin,
@@ -46,7 +46,7 @@ router.get(
 );
 
 router.get(
-    "/permissions/:id",
+    "/:id",
     hasPermission([
         RoleBasedPermissionGroups.AppAdmin,
         RoleBasedPermissionGroups.Admin,
@@ -57,7 +57,7 @@ router.get(
 );
 
 router.patch(
-    "/permissions/:id",
+    "/:id",
     hasPermission([
         RoleBasedPermissionGroups.AppAdmin,
         RoleBasedPermissionGroups.Admin,
@@ -69,7 +69,7 @@ router.patch(
 
 // restrict to only system administrators
 router.delete(
-    "/permissions/:id",
+    "/:id",
     hasPermission([RoleBasedPermissionGroups.AppAdmin]),
     validate(deleteOnePermissionByIdSchema),
     deleteOnePermissionById
