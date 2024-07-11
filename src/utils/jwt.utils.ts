@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import jwt, { JsonWebTokenError } from "jsonwebtoken";
 import { config } from "../config";
 import { AccessTokenPayload, RefreshTokenPayload } from "../types/auth.type";
 
@@ -16,7 +16,7 @@ export const decodeAccessToken = async (token: string) => {
     // decode token
     const decodedToken = (await jwt.decode(token)) as jwt.JwtPayload;
     if (!decodedToken.exp || decodedToken.exp < Date.now() / 1000) {
-        throw new Error("Token has expired");
+        throw new JsonWebTokenError("Token has expired");
     }
 
     // verify token and check that it hasn't been tampered with
@@ -28,7 +28,7 @@ export const decodeRefreshToken = async (token: string) => {
     // decode token
     const decodedToken = (await jwt.decode(token)) as jwt.JwtPayload;
     if (!decodedToken.exp || decodedToken.exp < Date.now() / 1000) {
-        throw new Error("Token has expired");
+        throw new JsonWebTokenError("Token has expired");
     }
 
     // verify token and check that it hasn't been tampered with

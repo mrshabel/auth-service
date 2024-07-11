@@ -1,5 +1,13 @@
 import * as z from "zod";
 
+// define the permission groups
+export const SessionPermissionGroups = Object.freeze({
+    AddSession: "AddSession",
+    UpdateSession: "UpdateSession",
+    ViewSession: "ViewSession",
+    DeleteSession: "DeleteSession",
+});
+
 // reusable schema fields
 const sessionIdSchema = z.string({ required_error: "Session ID is required" });
 const userIdSchema = z.string({ required_error: "User ID is required" });
@@ -87,6 +95,19 @@ export const deleteAllSessionsByUserIdSchema = z.object({
         .required(),
 });
 
+export const refreshSessionSchema = z.object({
+    params: z.object({
+        id: sessionIdSchema,
+    }),
+    body: z
+        .object({
+            refreshToken: z.string({
+                required_error: "Refresh token is required",
+            }),
+        })
+        .required(),
+});
+
 // define types for request
 export type AddOneSessionInput = z.TypeOf<typeof addOneSessionSchema>;
 export type AddOneSessionRequest = typeof addOneSessionSchema;
@@ -117,3 +138,6 @@ export type DeleteAllSessionsByUserIdInput = z.TypeOf<
 >;
 export type DeleteAllSessionsByUserIdRequest =
     typeof deleteAllSessionsByUserIdSchema;
+
+export type RefreshSessionInput = z.TypeOf<typeof refreshSessionSchema>;
+export type RefreshSessionRequest = typeof refreshSessionSchema;

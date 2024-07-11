@@ -14,6 +14,13 @@ export async function getOneSessionById(id: string) {
     return await Session.findById(id);
 }
 
+export async function getOneSessionByRefreshToken(
+    id: string,
+    refreshToken: string
+) {
+    return await Session.findOne({ _id: id, refreshToken });
+}
+
 export async function getAllSessions(query: GetAllSessionsInput["query"]) {
     const { skip, limit, ...search } = query;
 

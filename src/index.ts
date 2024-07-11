@@ -1,6 +1,6 @@
 import express, { Express } from "express";
 import { config } from "./config";
-import logger from "./utils/logger";
+import logger, { requestLogger } from "./utils/logger";
 import databaseConnect from "./config/db.config";
 
 // import routes
@@ -18,6 +18,9 @@ const app: Express = express();
 
 // define `pre` middleware configurations
 app.use(express.json());
+
+// log all requests
+app.use(requestLogger);
 
 // define routes
 app.use(healthCheckRoute);

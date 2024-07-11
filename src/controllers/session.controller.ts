@@ -1,13 +1,18 @@
 import * as sessionService from "../services/session.service";
+import * as userService from "../services/user.service";
 import { Request, Response, NextFunction } from "express";
 import {
     GetAllSessionsRequest,
     GetOneSessionByIdRequest,
     DeleteOneSessionByIdRequest,
     GetAllSessionsByUserIdRequest,
+    RefreshSessionRequest,
 } from "../schemas/session.schema";
-import { NotFoundError } from "../utils/error.utils";
+import { AppError, BadRequestError, NotFoundError } from "../utils/error.utils";
 import { RequestWithSchema } from "../types/request.type";
+import { createAccessToken, decodeRefreshToken } from "../utils/jwt.utils";
+import { JsonWebTokenError } from "jsonwebtoken";
+import { accessTokenCookieOptions } from "../config/auth.config";
 
 export async function getAllSessions(
     req: RequestWithSchema<GetAllSessionsRequest>,
@@ -122,6 +127,57 @@ export async function deleteAllStaleSessions(
             .status(200)
             .json({ message: "All expired sessions successfully deleted" });
     } catch (error) {
+        next(error);
+    }
+}
+
+// refresh session
+export async function refreshSession(
+    req: RequestWithSchema<RefreshSessionRequest>,
+    res: Response,
+    next: NextFunction
+) {
+    try {
+        // fetch current session with refresh token
+        const session = await sessionService.getOneSessionByRefreshToken(
+            req.params.id,
+            req.body.refreshToken
+        );
+
+        if (!session) {
+            throw new NotFoundError("Invalid session");
+        }
+
+        // validate refresh token
+        await decodeRefreshToken(session.refreshToken);
+
+        // retrieve related user record
+        const user = await userService.getOneUserById(session.userId);
+
+        if (!user) {
+            throw new NotFoundError("No user found with current session");
+        }
+
+        const permissions = user.permissions.map(
+            (permission) => permission.name
+        );
+
+        // reissue access token
+        const accessToken = await createAccessToken({
+            id: user.id,
+            permissions: permissions,
+        });
+
+        res.cookie("accessToken", accessToken, accessTokenCookieOptions);
+
+        return res
+            .status(200)
+            .json({ message: "Session refreshed successfully", accessToken });
+    } catch (error) {
+        if (error instanceof JsonWebTokenError) {
+            return next(new BadRequestError("Session has expired"));
+        }
+
         next(error);
     }
 }

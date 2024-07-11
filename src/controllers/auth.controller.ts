@@ -4,11 +4,15 @@ import * as authService from "../services/auth.service";
 import * as sessionService from "../services/session.service";
 import { createAccessToken, createRefreshToken } from "../utils/jwt.utils";
 import {
+    ForgotPasswordRequest,
     LoginRequest,
     LogoutRequest,
     SignupRequest,
 } from "../schemas/auth.schema";
-import { validatePassword } from "../utils/password.utils";
+import {
+    createPasswordResetToken,
+    validatePassword,
+} from "../utils/password.utils";
 import { omit } from "lodash";
 import logger from "../utils/logger";
 import {
@@ -123,6 +127,34 @@ export async function logout(
 
         return res.status(200).json({
             message: "Logout successfully",
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function forgotPassword(
+    req: RequestWithSchema<ForgotPasswordRequest>,
+    res: Response,
+    next: NextFunction
+) {
+    try {
+        const existingUser = await userService.getOneUserByEmail(
+            req.body.email
+        );
+        if (!existingUser) {
+            throw new BadRequestError("No user found with this email");
+        }
+
+        // create password reset token
+        const resetToken = createPasswordResetToken();
+
+        //TODO: send password reset email email
+
+        return res.status(201).json({
+            message:
+                "Success! A Password reset link has been sent to your email",
+            resetToken,
         });
     } catch (error) {
         next(error);

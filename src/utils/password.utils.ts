@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
 /**
  *
@@ -20,4 +21,13 @@ export async function validatePassword(
     hashedPassword: string
 ) {
     return await bcrypt.compare(password, hashedPassword);
+}
+
+/**
+ * Generates a hashed password reset token
+ * @returns the hashed token in hex notation
+ */
+export function createPasswordResetToken(): string {
+    const token = crypto.randomBytes(32).toString("hex");
+    return token;
 }

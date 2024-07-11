@@ -6,6 +6,8 @@ import {
     getAllSessionsSchema,
     getAllSessionsByUserIdSchema,
     deleteAllSessionsByUserIdSchema,
+    refreshSessionSchema,
+    SessionPermissionGroups,
 } from "../schemas/session.schema";
 import {
     getAllSessions,
@@ -13,12 +15,20 @@ import {
     getOneSessionById,
     deleteAllSessionsByUserId,
     deleteOneSessionById,
+    refreshSession,
 } from "../controllers/session.controller";
 import { hasPermission, requireAuth } from "../middlewares/auth.middleware";
 import { RoleBasedPermissionGroups } from "../schemas/shared.schema";
 import { deleteAllExpiredSessions } from "../services/session.service";
 
 const router = Router();
+
+// no authentication required
+router.post(
+    "/sessions/:id/refresh",
+    validate(refreshSessionSchema),
+    refreshSession
+);
 
 // require authentication
 router.use(requireAuth);
@@ -29,6 +39,7 @@ router.get(
     hasPermission([
         RoleBasedPermissionGroups.AppAdmin,
         RoleBasedPermissionGroups.Admin,
+        SessionPermissionGroups.ViewSession,
     ]),
     getAllSessions
 );
@@ -41,6 +52,7 @@ router.get(
         RoleBasedPermissionGroups.AuthBase,
         RoleBasedPermissionGroups.AppAdmin,
         RoleBasedPermissionGroups.User,
+        SessionPermissionGroups.ViewSession,
     ]),
     getAllSessionsByUserId
 );
@@ -58,7 +70,10 @@ router.delete(
 
 router.delete(
     "/sessions/expired",
-    hasPermission([RoleBasedPermissionGroups.AppAdmin]),
+    hasPermission([
+        RoleBasedPermissionGroups.AppAdmin,
+        SessionPermissionGroups.DeleteSession,
+    ]),
     deleteAllExpiredSessions
 );
 
@@ -70,6 +85,7 @@ router.get(
         RoleBasedPermissionGroups.AuthBase,
         RoleBasedPermissionGroups.AppAdmin,
         RoleBasedPermissionGroups.User,
+        SessionPermissionGroups.ViewSession,
     ]),
     getOneSessionById
 );
@@ -81,6 +97,7 @@ router.delete(
         RoleBasedPermissionGroups.AuthBase,
         RoleBasedPermissionGroups.AppAdmin,
         RoleBasedPermissionGroups.User,
+        SessionPermissionGroups.DeleteSession,
     ]),
     deleteOneSessionById
 );

@@ -6,7 +6,7 @@ export async function addOneUser(data: AddOneUserInput["body"]) {
 }
 
 export async function getOneUserById(id: string) {
-    return await User.findById(id);
+    return await User.findById(id).populate("permissions", "-_id name");
 }
 
 export async function getOneUserByEmail(email: string) {
