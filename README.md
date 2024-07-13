@@ -69,7 +69,15 @@ Once the application is running, you can access the API and authentication endpo
 2. Create a new project or select an existing one.
 3. Navigate to **Credentials** and create OAuth 2.0 credentials.
 4. Add the following details to your OAuth consent screen:
-    - Authorized redirect URI (development): `http://localhost:8000/auth/google/`
-    - Authorized redirect URI (production): `https://your_domain/auth/google/`
-5. Select `email` and `profile` information as the scopes
+    - Authorized redirect URI (development): `http://localhost:8000/oauth/google/`
+    - Authorized redirect URI (production): `https://your_domain/oauth/google/`
+5. Select `auth/userinfo.email` and `auth/userinfo.profile` information as the scopes
 6. Obtain `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` and update your `.env` file accordingly.
+
+### Google Sign-In Link
+
+To integrate Google Sign-In with your application, use the following link format in your client application, replacing `{GOOGLE_CLIENT_ID}` with your actual values:
+
+```markdown
+[Sign in with Google](https://accounts.google.com/o/oauth2/v2/auth?client_id=YOUR_GOOGLE_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&prompt=consent&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&access_type=offline)
+```
