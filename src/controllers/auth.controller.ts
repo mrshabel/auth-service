@@ -61,6 +61,11 @@ export async function login(
             throw new BadRequestError("Invalid email or password");
         }
 
+        // // check whether user is active or not
+        // if (!user.isActive) {
+        //     throw new BadRequestError("Account not verified");
+        // }
+
         if (!(await validatePassword(req.body.password, user.password))) {
             throw new BadRequestError("Invalid email or password");
         }

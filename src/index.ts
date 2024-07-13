@@ -11,6 +11,7 @@ import {
     userRoutes,
     sessionRoutes,
     permissionRoutes,
+    oauthRoutes,
 } from "./routes";
 import errorMiddleware from "./middlewares/error.middleware";
 
@@ -28,6 +29,7 @@ app.use("/", authRoutes);
 app.use("/users", userRoutes);
 app.use("/sessions/", sessionRoutes);
 app.use("/permissions", permissionRoutes);
+app.use("/oauth", oauthRoutes);
 
 app.use(notFoundRoute);
 

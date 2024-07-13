@@ -19,6 +19,7 @@
     "author": "Shabel Gumah",
     "license": "ISC",
     "dependencies": {
+        "axios": "^1.7.2",
         "bcryptjs": "^2.4.3",
         "config": "^3.3.11",
         "cors": "^2.8.5",

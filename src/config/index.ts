@@ -15,4 +15,8 @@ export const config: Readonly<IConfig> = {
     JWT_REFRESH_TOKEN_EXPIRY: Number(process.env.JWT_REFRESH_TOKEN_EXPIRY)!,
     COOKIE_DOMAIN: process.env.COOKIE_DOMAIN!,
     PASSWORD_RESET_TOKEN_EXPIRY: 900000, // 15 minutes
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID!,
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET!,
+    GOOGLE_OAUTH_URL: "https://accounts.google.com/o/oauth2/v2/auth",
+    GOOGLE_OAUTH_TOKEN_URL: "https://oauth2.googleapis.com/token",
 };

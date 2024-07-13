@@ -1,5 +1,6 @@
 import { Schema, model, Types } from "mongoose";
 import { UserDocument } from "../types/user.type";
+import { OAuthProviders } from "../types/oauth.type";
 
 const userSchema = new Schema<UserDocument>(
     {
@@ -10,6 +11,12 @@ const userSchema = new Schema<UserDocument>(
         lastName: { type: String, required: true },
         isActive: { type: Boolean, required: true, default: false },
         isLocked: { type: Boolean, required: true, default: false },
+        provider: {
+            type: String,
+            enum: Object.values(OAuthProviders),
+            default: OAuthProviders.Local,
+        },
+        providerId: { type: String },
         passwordResetToken: { type: String, select: false },
         passwordResetExpires: { type: Date, select: false },
     },

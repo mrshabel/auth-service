@@ -178,7 +178,9 @@ export async function refreshSession(
             .json({ message: "Session refreshed successfully", accessToken });
     } catch (error) {
         if (error instanceof JsonWebTokenError) {
-            return next(new BadRequestError("Session has expired"));
+            return next(
+                new BadRequestError("Session has expired. Please login again")
+            );
         }
 
         next(error);

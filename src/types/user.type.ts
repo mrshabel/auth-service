@@ -1,4 +1,5 @@
 import { DocumentBase } from "./documentBase";
+import { OAuthProviders } from "./oauth.type";
 import { PermissionDocument } from "./permission.type";
 
 // define db document schema
@@ -10,6 +11,8 @@ export interface UserDocument extends DocumentBase {
     lastName: string;
     isActive: boolean;
     isLocked: boolean;
+    provider: OAuthProviders;
+    providerId?: string;
     passwordResetToken: string;
     passwordResetExpires: Date | string;
 }
