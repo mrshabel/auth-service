@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-export const googleOAuthSchema = z.object({
+export const googleOAuthCallbackSchema = z.object({
     query: z
         .object({
             code: z.string({ required_error: "Code is required" }),
@@ -8,4 +8,13 @@ export const googleOAuthSchema = z.object({
         .required(),
 });
 
-export type GoogleOAuthRequestSchema = typeof googleOAuthSchema;
+export const gitHubOAuthCallbackSchema = z.object({
+    query: z
+        .object({
+            code: z.string({ required_error: "Code is required" }),
+        })
+        .required(),
+});
+
+export type GoogleOAuthRequestSchema = typeof googleOAuthCallbackSchema;
+export type GitHubOAuthRequestSchema = typeof gitHubOAuthCallbackSchema;

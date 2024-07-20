@@ -1,6 +1,14 @@
 import * as z from "zod";
 import { OAuthProviders } from "../types/oauth.type";
 
+// define the permission groups
+export const UserPermissionGroups = Object.freeze({
+    AddUser: "AddUser",
+    UpdateUser: "UpdateUser",
+    ViewUser: "ViewUser",
+    DeleteUser: "DeleteUser",
+});
+
 export const addOneUserSchema = z.object({
     body: z
         .object({

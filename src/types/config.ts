@@ -11,4 +11,10 @@ export interface IConfig {
     GOOGLE_CLIENT_SECRET: string;
     GOOGLE_OAUTH_URL: string;
     GOOGLE_OAUTH_TOKEN_URL: string;
+    GITHUB_CLIENT_ID: string;
+    GITHUB_CLIENT_SECRET: string;
+    GITHUB_OAUTH_URL: string;
+    GITHUB_OAUTH_TOKEN_URL: string;
+    GITHUB_OAUTH_USER_PROFILE_URL: string;
+    GITHUB_OAUTH_USER_EMAIL_URL: string;
 }

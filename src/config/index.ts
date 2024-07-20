@@ -19,4 +19,10 @@ export const config: Readonly<IConfig> = {
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET!,
     GOOGLE_OAUTH_URL: "https://accounts.google.com/o/oauth2/v2/auth",
     GOOGLE_OAUTH_TOKEN_URL: "https://oauth2.googleapis.com/token",
+    GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID!,
+    GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET!,
+    GITHUB_OAUTH_URL: "https://github.com/login/oauth/authorize",
+    GITHUB_OAUTH_TOKEN_URL: "https://github.com/login/oauth/access_token",
+    GITHUB_OAUTH_USER_PROFILE_URL: "https://api.github.com/user",
+    GITHUB_OAUTH_USER_EMAIL_URL: "https://api.github.com/user/emails",
 };

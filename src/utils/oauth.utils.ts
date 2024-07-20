@@ -1,6 +1,9 @@
 import qs from "qs";
 import { config } from "../config";
-import { GoogleOAuthURLParams } from "../types/oauth.type";
+import {
+    GitHubOAuthURLParams,
+    GoogleOAuthURLParams,
+} from "../types/oauth.type";
 
 // reference url from google playground: Location: `https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=https%3A%2F%2Fdevelopers.google.com%2Foauthplayground&prompt=consent&response_type=code&client_id=407408718192.apps.googleusercontent.com&scope=&access_type=offline`
 
@@ -18,6 +21,22 @@ export function getGoogleOAuthURL(redirectURL: string) {
         response_type: "code",
         scope: "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile",
         access_type: "offline",
+    };
+
+    const query = qs.stringify(params);
+
+    return `${url}?${query}`;
+}
+
+// reference url for github oauth integration: https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authenticating-to-the-rest-api-with-an-oauth-app
+export function getGitHubOAuthURL() {
+    // custom redirect url can be fetched from data source or config object
+    const url = config.GITHUB_OAUTH_URL;
+
+    // define client id and scopes
+    const params: GitHubOAuthURLParams = {
+        client_id: config.GITHUB_CLIENT_ID,
+        scope: "user:email",
     };
 
     const query = qs.stringify(params);
