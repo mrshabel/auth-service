@@ -14,6 +14,7 @@ export const config: Readonly<IConfig> = {
     JWT_ACCESS_TOKEN_EXPIRY: Number(process.env.JWT_ACCESS_TOKEN_EXPIRY)!,
     JWT_REFRESH_TOKEN_EXPIRY: Number(process.env.JWT_REFRESH_TOKEN_EXPIRY)!,
     COOKIE_DOMAIN: process.env.COOKIE_DOMAIN!,
+    BACKEND_URL: process.env.BACKEND_URL!,
     PASSWORD_RESET_TOKEN_EXPIRY: 900000, // 15 minutes
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID!,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET!,

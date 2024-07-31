@@ -30,9 +30,7 @@ export async function googleOAuth(
     next: NextFunction
 ) {
     // compose the Google OAuth url
-    const redirectURL = `${req.protocol}://${req.get(
-        "host"
-    )}/oauth/google/callback`;
+    const redirectURL = `${config.BACKEND_URL}/oauth/google/callback`;
     const googleOAuthURL = getGoogleOAuthURL(redirectURL);
 
     // redirect the user to the sign in prompt page
@@ -49,20 +47,17 @@ export async function googleOAuthCallback(
     const { code } = req.query;
 
     try {
-        const redirectURL = `${req.protocol}://${req.get(
-            "host"
-        )}/oauth/google/callback`;
+        const redirectURL = `${config.BACKEND_URL}/oauth/google/callback`;
 
         // make request for access and refresh token
         const data = await oauthService.getGoogleOAuthTokens({
             redirectURL,
             code: code as string,
         });
-        // logger.info(data);
 
         // decode id token (from response) for information or fetch user info from google api
         const tokenData = await decodeGoogleOAuthToken(data.id_token);
-        console.log(tokenData);
+        logger.info(tokenData);
 
         // throw error if email is not verified
         if (!tokenData.email_verified) {

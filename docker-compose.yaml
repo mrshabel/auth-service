@@ -1,14 +1,16 @@
 services:
-    api:
-        container_name: api
+    auth-service:
+        container_name: auth-service
         build:
             context: .
             dockerfile: Dockerfile
         env_file: .env
-        ports:
-            - 8000:8000
+        expose:
+            - 8000
+        networks:
+            - microservices
         depends_on:
-            - db
+            - auth-db
         develop:
             watch:
                 - action: sync
@@ -26,16 +28,18 @@ services:
                 - action: rebuild
                   path: package.json
 
-    db:
+    auth-db:
         image: mongo
-        container_name: db
+        container_name: auth-db
         build:
             context: .
             dockerfile: db.Dockerfile
         restart: always
         env_file: .env
-        ports:
-            - 8001:27017
+        expose:
+            - 27017
+        networks:
+            - microservices
         volumes:
             - ./mongo-data:/data/db
         environment:
@@ -43,19 +47,21 @@ services:
             - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
             - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
 
-    db-admin:
+    auth-db-admin:
         image: mongo-express
-        container_name: db-admin
+        container_name: auth-db-admin
         depends_on:
-            - db
+            - auth-db
         restart: always
         env_file: .env
         ports:
             - 8002:8000
+        networks:
+            - microservices
         environment:
             - ME_CONFIG_MONGODB_ADMINUSERNAME=${MONGO_INITDB_ROOT_USERNAME}
             - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
-            - ME_CONFIG_MONGODB_URL=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@db:27017/
+            - ME_CONFIG_MONGODB_URL=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@auth-db:27017/
             - ME_CONFIG_BASICAUTH=false
 
 volumes:
