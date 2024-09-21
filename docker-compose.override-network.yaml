@@ -1,3 +1,4 @@
+# binds to an external network of the microservice architecture
 services:
     auth-service:
         container_name: auth-service-sg
@@ -6,7 +7,9 @@ services:
             dockerfile: Dockerfile
         env_file: .env
         expose:
-            - 8000:8005
+            - 8000
+        networks:
+            - microservices
         depends_on:
             - auth-db
         volumes:
@@ -41,6 +44,8 @@ services:
         env_file: .env
         expose:
             - 27017
+        networks:
+            - microservices
         volumes:
             - ./mongo-data:/data/db
         environment:
@@ -51,13 +56,15 @@ services:
     auth-db-admin:
         image: mongo-express
         container_name: auth-db-admin-sg
-        depends_on:
-            - auth-db
         logging:
             driver: none #disable logging
+        depends_on:
+            - auth-db
         env_file: .env
         ports:
-            - 8002:8006
+            - 8002:8000
+        networks:
+            - microservices
         environment:
             - ME_CONFIG_MONGODB_ADMINUSERNAME=${MONGO_INITDB_ROOT_USERNAME}
             - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
