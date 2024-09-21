@@ -13,6 +13,8 @@ export interface UserDocument extends DocumentBase {
     isLocked: boolean;
     provider: OAuthProviders;
     providerId?: string;
+    verificationToken: string;
+    verificationTokenExpiry: Date | string;
     passwordResetToken: string;
     passwordResetExpires: Date | string;
 }

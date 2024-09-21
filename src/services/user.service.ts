@@ -16,7 +16,9 @@ export async function getOneUserById(id: string) {
 
 export async function getOneUserByEmail(email: string) {
     return await User.findOne({ email })
-        .select("+password +passwordResetToken +passwordResetExpires")
+        .select(
+            "+password +passwordResetToken +passwordResetExpires +verificationToken +verificationTokenExpiry"
+        )
         .populate("permissions", "-_id name");
 }
 

@@ -31,3 +31,12 @@ export function createPasswordResetToken(): string {
     const token = crypto.randomBytes(32).toString("hex");
     return token;
 }
+
+/**
+ * Generates an email verification token
+ * @returns the hashed token in hex notation
+ */
+export function createEmailVerificationToken(): string {
+    const token = crypto.randomBytes(32).toString("hex");
+    return token;
+}

@@ -7,6 +7,7 @@ export interface IConfig {
     JWT_REFRESH_TOKEN_EXPIRY: number;
     COOKIE_DOMAIN: string;
     BACKEND_URL: string;
+    VERIFICATION_TOKEN_EXPIRY: number;
     PASSWORD_RESET_TOKEN_EXPIRY: number;
     GOOGLE_CLIENT_ID: string;
     GOOGLE_CLIENT_SECRET: string;

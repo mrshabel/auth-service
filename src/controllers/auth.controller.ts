@@ -24,6 +24,7 @@ import {
 } from "../utils/error.utils";
 import { RequestWithSchema } from "../types/request.type";
 import { config } from "../config";
+import { sendUserRegisteredEvent } from "../events/producers/userRegistered.producer";
 
 export async function signup(
     req: RequestWithSchema<SignupRequest>,
@@ -34,13 +35,47 @@ export async function signup(
         const existingUser = await userService.getOneUserByEmail(
             req.body.email
         );
-        if (existingUser) {
+        if (existingUser && existingUser.isActive) {
             throw new BadRequestError("User already exists");
+        }
+        console.log(existingUser?.verificationTokenExpiry);
+
+        // handle case where user is signing up again after verification link has expired
+        if (existingUser) {
+            if (
+                !existingUser.isActive &&
+                new Date() < new Date(existingUser.verificationTokenExpiry)
+            ) {
+                return res.status(200).json({
+                    message: "Verification link was recently sent to your mail",
+                });
+            } else {
+                // resend verification link
+                const token = await authService.updateEmailVerificationToken(
+                    existingUser.email
+                );
+                const verificationURL = `${config.BACKEND_URL}/verify-email/${token}`;
+
+                // dispatch event
+                await sendUserRegisteredEvent({
+                    email: existingUser.email,
+                    url: verificationURL,
+                });
+                return res.status(201).json({
+                    message:
+                        "Success! A verification link has been sent to your email",
+                });
+            }
         }
 
         const user = await authService.signup(req.body);
 
-        //TODO: send verification email
+        // dispatch event
+        const verificationURL = `${config.BACKEND_URL}/verify-email/${user.verificationToken}`;
+        await sendUserRegisteredEvent({
+            email: user.email,
+            url: verificationURL,
+        });
 
         return res.status(201).json({
             message: "Success! A verification link has been sent to your email",
@@ -62,9 +97,9 @@ export async function login(
         }
 
         // // check whether user is active or not
-        // if (!user.isActive) {
-        //     throw new BadRequestError("Account not verified");
-        // }
+        if (!user.isActive) {
+            throw new BadRequestError("Account not verified");
+        }
 
         if (!(await validatePassword(req.body.password, user.password))) {
             throw new BadRequestError("Invalid email or password");

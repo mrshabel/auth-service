@@ -7,12 +7,14 @@ import {
     SignupInput,
 } from "../schemas/auth.schema";
 import {
+    createEmailVerificationToken,
     createPasswordResetToken,
     hashPassword,
 } from "../utils/password.utils";
 
 export const signup = async function (data: SignupInput["body"]) {
     const password = await hashPassword(data.password);
+    const verificationToken = createEmailVerificationToken();
 
     // assign default 'User' role-permission
     const defaultPermissionIds = [SystemDefaultRoleBasedPermissions.User._id];
@@ -20,8 +22,26 @@ export const signup = async function (data: SignupInput["body"]) {
         ...data,
         password,
         permissions: defaultPermissionIds,
+        verificationToken,
+        verificationTokenExpiry: new Date(
+            Date.now() + config.VERIFICATION_TOKEN_EXPIRY * 1000
+        ),
     });
 };
+
+export async function updateEmailVerificationToken(email: string) {
+    const verificationToken = createEmailVerificationToken();
+    await User.findOneAndUpdate(
+        { email: email },
+        {
+            verificationToken: verificationToken,
+            verificationTokenExpiry: new Date(
+                Date.now() + config.VERIFICATION_TOKEN_EXPIRY * 1000
+            ),
+        }
+    );
+    return verificationToken;
+}
 
 /**
  *

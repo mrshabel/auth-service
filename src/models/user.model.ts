@@ -17,6 +17,8 @@ const userSchema = new Schema<UserDocument>(
             default: OAuthProviders.Local,
         },
         providerId: { type: String },
+        verificationToken: { type: String, select: false },
+        verificationTokenExpiry: { type: Date, select: false },
         passwordResetToken: { type: String, select: false },
         passwordResetExpires: { type: Date, select: false },
     },

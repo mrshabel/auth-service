@@ -14,6 +14,7 @@ import {
     oauthRoutes,
 } from "./routes";
 import errorMiddleware from "./middlewares/error.middleware";
+import { startBroker } from "./events";
 
 const app: Express = express();
 
@@ -37,9 +38,8 @@ app.use(notFoundRoute);
 app.use(errorMiddleware);
 
 const server = app.listen(config.PORT, async () => {
+    Promise.all([await databaseConnect(), await startBroker()]);
     logger.info(`Listening to all incoming requests on port ${config.PORT}`);
-
-    await databaseConnect();
 });
 
 // handle synchronous server exceptions
