@@ -1,8 +1,8 @@
 import logger from "../../utils/logger";
 import { getBrokerChannel } from "..";
-import { UserRegisteredEvent } from "../../types/events.type";
+import { PasswordResetEvent } from "../../types/events.type";
 
-export async function sendUserRegisteredEvent(data: UserRegisteredEvent) {
+export async function sendPasswordResetEvent(data: PasswordResetEvent) {
     try {
         const channel = getBrokerChannel();
 
@@ -18,7 +18,7 @@ export async function sendUserRegisteredEvent(data: UserRegisteredEvent) {
             }
         );
 
-        logger.info(`User Registered Event added to queue successfully`);
+        logger.info(`Password Reset Event added to queue successfully`);
     } catch (error) {
         logger.error(error, "Could not send event");
         throw new Error("Failed to process event");
