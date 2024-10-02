@@ -27,4 +27,7 @@ export const config: Readonly<IConfig> = {
     GITHUB_OAUTH_TOKEN_URL: "https://github.com/login/oauth/access_token",
     GITHUB_OAUTH_USER_PROFILE_URL: "https://api.github.com/user",
     GITHUB_OAUTH_USER_EMAIL_URL: "https://api.github.com/user/emails",
+    // broker
+    BROKER_HOST: process.env.BROKER_HOST!,
+    BROKER_PORT: Number(process.env.BROKER_PORT)!,
 };

@@ -58,9 +58,11 @@ export async function signup(
 
                 // dispatch event
                 await sendUserRegisteredEvent({
-                    // event: "user_registered",
+                    eventType: "user_registered",
+                    userId: existingUser.id,
                     email: existingUser.email,
                     url: verificationURL,
+                    timestamp: new Date(),
                 });
                 return res.status(201).json({
                     message:
@@ -74,9 +76,11 @@ export async function signup(
         // dispatch event
         const verificationURL = `${config.BACKEND_URL}/verify-email/${user.verificationToken}`;
         await sendUserRegisteredEvent({
-            // event: "user_registered",
+            eventType: "user_registered",
+            userId: user.id,
             email: user.email,
             url: verificationURL,
+            timestamp: new Date(),
         });
 
         return res.status(201).json({

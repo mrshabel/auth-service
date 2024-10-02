@@ -1,26 +1,40 @@
 import logger from "../../utils/logger";
 import { getBrokerChannel } from "..";
-import { UserRegisteredEvent } from "../../types/events.type";
+import { UserRegisteredEvent } from "../../types/event.type";
+import { AuthEventKeys, Exchanges } from "../../constants/event.constant";
+import { retryWithExponentialBackoff } from "../../utils/backoff";
 
 export async function sendUserRegisteredEvent(data: UserRegisteredEvent) {
     try {
-        const channel = getBrokerChannel();
+        // use an exponential backoff strategy to publish message
+        await retryWithExponentialBackoff({
+            operation: async () => {
+                const channel = getBrokerChannel();
 
-        // create queue if it does not exist
-        await channel.assertQueue("notification_events", { durable: true });
+                // publish message to auth exchange with routing key
+                const isPublished = channel.publish(
+                    Exchanges.Auth,
+                    AuthEventKeys.UserRegistered,
+                    Buffer.from(JSON.stringify(data)),
+                    { persistent: true }
+                );
 
-        // send message to queue. uses a default exchange since message is delivered to only one queue
-        channel.sendToQueue(
-            "notification_events",
-            Buffer.from(JSON.stringify(data)),
-            {
-                persistent: true,
-            }
+                if (!isPublished) {
+                    throw new Error("Message not published. Retrying...");
+                }
+
+                logger.info(`User registered event published`);
+            },
+            initialWait: 200,
+            factor: 2,
+            maxRetries: 5,
+        });
+    } catch (error) {
+        logger.error(
+            { error },
+            `Could not publish user registered event for user with id: ${data.userId}`
         );
 
-        logger.info(`User Registered Event added to queue successfully`);
-    } catch (error) {
-        logger.error(error, "Could not send event");
-        throw new Error("Failed to process event");
+        return;
     }
 }

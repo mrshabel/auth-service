@@ -19,4 +19,6 @@ export interface IConfig {
     GITHUB_OAUTH_TOKEN_URL: string;
     GITHUB_OAUTH_USER_PROFILE_URL: string;
     GITHUB_OAUTH_USER_EMAIL_URL: string;
+    BROKER_HOST: string;
+    BROKER_PORT: number;
 }

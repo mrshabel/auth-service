@@ -1,6 +1,8 @@
 import amqplib from "amqplib";
 import { retryWithExponentialBackoff } from "../utils/backoff";
 import logger from "../utils/logger";
+import { config } from "../config";
+import { ExchangeTypes, Exchanges } from "../constants/event.constant";
 
 // declare connection and channel
 let connection: amqplib.Connection;
@@ -10,8 +12,16 @@ export async function startBroker() {
     try {
         await retryWithExponentialBackoff({
             operation: async () => {
-                connection = await amqplib.connect("amqp://rabbitmq:5672");
+                connection = await amqplib.connect(
+                    `amqp://${config.BROKER_HOST}:${config.BROKER_PORT}`
+                );
                 channel = await connection.createChannel();
+                // assert primary exchange for auth service
+                await channel.assertExchange(
+                    Exchanges.Auth,
+                    ExchangeTypes.Auth,
+                    { durable: true }
+                );
             },
             initialWait: 1000,
             factor: 2,
